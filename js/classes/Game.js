@@ -1,15 +1,19 @@
 export class Game{
-    constructor(course, players){
+    constructor(course){
         this.id = Date.now().toString()
         this.course = course
-        this.players = players
+        this.players = []
         this.status = true
     }
     addPlayer(player){
-        this.players.push(player)
+        if(this.players.length > 4){
+            this.players.push(player)
+        } else {
+            alert('You can only have up to 4 players!')
+        }
     }
-    removePlayer(player){
-
+    removePlayer(playerId){
+        // let playerToRemove = this.players.find(player => this.players.id === playerId)
     }
     setCourse(course){
         this.course = course
