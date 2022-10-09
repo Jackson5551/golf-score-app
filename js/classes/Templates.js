@@ -1,8 +1,11 @@
 import { Player } from "./Player.js"
 import { Game } from "./Game.js"
+import * as apiHelper from "../modules/apiHelper.js"
+
+let game = new Game;
 
 export class Templates {
-    constructor(title) { 
+    constructor(title) {
         this.title = title
     }
     home(appDiv) {
@@ -23,55 +26,83 @@ export class Templates {
         const div = document.createElement('div')
         div.classList.add('d-flex', 'flex-column', 'justify-content-between', 'align-items-center')
         const editPlayerBtn = document.createElement('span')
-        editPlayerBtn.innerHTML = `<a href="#/edit-players" class="btn btn-primary mb-5">Edit Player</a>`
+        editPlayerBtn.innerHTML = `<a href="#/edit-players" class="btn btn-primary mb-5">Edit Players</a>`
         const editCourseBtn = document.createElement('span')
         editCourseBtn.innerHTML = `<a href="#/edit-course" class="btn btn-primary mb-5">Edit Course</a>`
+        const gameInfo = document.createElement('span')
+        const playerInfo = document.createElement('div')
+        if(game.players.length === 0){
+            playerInfo.innerHTML = 'No Players'
+        } else {
+            playerInfo.innerHTML = ''
+            game.players.forEach(player => {
+                const playerSpan = document.createElement('span')
+                playerSpan.innerHTML = player.name
+                playerInfo.appendChild(playerSpan)
+            })
+        }
+        if(!game.course){
+            gameInfo.innerHTML = 'No Course Selected'
+        } else {
+            gameInfo.innerHTML = `Course: ${game.course.name}`
+        }
         const playBtn = document.createElement('span')
         playBtn.innerHTML = `<a href="#/game" class="btn btn-success mb-5">PLAY</a>`
 
         div.appendChild(editPlayerBtn)
         div.appendChild(editCourseBtn)
+        div.appendChild(playerInfo)
+        div.appendChild(gameInfo)
         div.appendChild(playBtn)
 
         appDiv.appendChild(div)
     }
-    editPlayers(appDiv) { }
+    editPlayers(appDiv) {
+
+    }
     editCourse(appDiv) {
         appDiv.innerHTML = ''
-        const containerDiv = document.createElement('div')
-        containerDiv.classList.add('container')
-        const rowDiv = document.createElement('div')
-        rowDiv.classList.add('row')
-        const colDiv = document.createElement('div')
-        colDiv.classList.add('col-lg-12')
-        const formGroupDiv = document.createElement('div')
-        formGroupDiv.classList.add('form-group')
-        const formLabel = document.createElement('label')
-        formLabel.innerHTML = `Select Course`
-        const form = document.createElement('form')
-        form.classList.add('input-group', 'mt-2', 'd-flex')
-        const input = document.createElement('input')
-        input.type = 'select'
-        input.classList.add('form-control')
-        const selectBtn = document.createElement('button')
-        selectBtn.type = 'submit'
-        selectBtn.classList.add('btn', 'btn-primary')
-        selectBtn.innerHTML = 'Play'
+        let renderCards = async function () {
+            await apiHelper.runOnLoad()
+            const allCourses = apiHelper.courses
+            console.log(allCourses)
+            const container = document.createElement('div')
+            container.classList.add('list-group')
+            container.innerHTML = ''
+            allCourses.forEach(course => {
+                console.log(course.name)
+                const a = document.createElement('a')
+                a.href = '#/new-game'
+                a.classList.add('list-group-item', 'list-group-item-action', 'flex-column', 'align-items-start')
+                const div = document.createElement('div')
+                div.classList.add('d-flex', 'w-100', 'justify-content-between')
+                const h5 = document.createElement('h5')
+                h5.classList.add('mb-1')
+                h5.innerHTML = course.name
+                const small = document.createElement('small')
+                small.innerHTML = ''
+                const p = document.createElement('p')
+                p.classList.add('mb-1')
+                p.innerText = 'Address'
 
-        containerDiv.appendChild(rowDiv)
-        rowDiv.appendChild(colDiv)
-        colDiv.appendChild(formGroupDiv)
-        colDiv.appendChild(formLabel)
-        formGroupDiv.appendChild(form)
-        form.appendChild(input)
-        form.appendChild(selectBtn)
+                a.appendChild(div)
+                div.appendChild(h5)
+                div.appendChild(small)
+                a.appendChild(p)
 
-        appDiv.appendChild(containerDiv)
+                container.appendChild(a)
 
-        selectBtn.addEventListener('submit', e=>{
-            e.preventDefault()
-            
-        })
+                a.addEventListener('click', () => {
+                    console.log(course.name)
+                    game.course = course
+                    console.log(game)
+                })
+            })
+            appDiv.innerHTML = ''
+            appDiv.appendChild(container)
+            console.log('Done')
+        }
+        renderCards()
     }
     game(appDiv) { }
     viewScorecards(appDiv) { }

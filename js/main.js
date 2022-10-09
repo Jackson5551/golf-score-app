@@ -2,32 +2,6 @@ import { Templates } from "./classes/Templates.js";
 
 const appDiv = document.getElementById("app");
 
-// function createTemplates(pages, templateList) {
-//     let myDiv = document.getElementById(appDiv);
-//     let template = (name, templateFunction) => {
-//         return templates[name] = templateFunction;
-//     };
-//     pages.forEach(page => {
-//         template(page.toString(), () => {
-//             myDiv.innerHTML = ''
-//             const title = document.createElement('span')
-//             title.innerHTML = page.toString()
-//             const listPages = document.createElement('ul')
-//             allPages.forEach(page2=>{
-//                 const liPage = document.createElement('li')
-//                 liPage.innerHTML = `<a href="#/${page2}">${page2}</a>`
-//                 listPages.appendChild(liPage)
-//             })
-//             myDiv.appendChild(title)
-//             return myDiv.appendChild(listPages)
-//         })
-//     });
-// }
-
-// function createPage(page){
-//     page.innerHTML = ''
-// }
-
 function createTemplates(pages, templateList){
     let template = (name, templateFunction) => {
         return templates[name] = templateFunction;
@@ -96,18 +70,6 @@ let templates = []
 
 createTemplates(allPages, templates)
 
-// let route = (path, template)=>{
-//     if (typeof template == "function") {
-//         return routes[path] = template;
-//     }
-//     else if (typeof template == "string") {
-//         return routes[path] = templates[template];
-//     }
-//     else {
-//         return;
-//     }
-// }
-
 function route(route, routeTo){
     let page = allPages.find(element => element.path === routeTo)
     let newRoute = {
@@ -122,9 +84,12 @@ let resolveRoute = (route) => {
         // console.log(routes[route])
         let currentRoute = routes.find(element => element.route === route)
         console.log(currentRoute)
+        console.log(route)
         // return routes[route];
         currentRoute.routeTo()
+        return
     } catch (error) {
+        console.log(error)
         throw new Error("The route is not defined");
     }
 };
