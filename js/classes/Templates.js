@@ -24,7 +24,7 @@ export class Templates {
     }
     newGame(appDiv) {
         appDiv.innerHTML = ''
-        
+
         const div = document.createElement('div')
         div.classList.add('d-flex', 'flex-column', 'justify-content-between', 'align-items-center')
         const editPlayerBtn = document.createElement('span')
@@ -33,7 +33,7 @@ export class Templates {
         editCourseBtn.innerHTML = `<a href="#/edit-course" class="btn btn-primary mb-5">Edit Course</a>`
         const gameInfo = document.createElement('span')
         const playerInfo = document.createElement('div')
-        if(game.players.length === 0){
+        if (game.players.length === 0) {
             playerInfo.innerHTML = 'No Players'
         } else {
             playerInfo.innerHTML = ''
@@ -43,7 +43,7 @@ export class Templates {
                 playerInfo.appendChild(playerSpan)
             })
         }
-        if(!game.course){
+        if (!game.course) {
             gameInfo.innerHTML = 'No Course Selected'
         } else {
             gameInfo.innerHTML = `Course: ${game.course.name}`
@@ -59,7 +59,7 @@ export class Templates {
 
         appDiv.appendChild(div)
 
-        playBtn.addEventListener('click', e=>{
+        playBtn.addEventListener('click', e => {
             storageHandler.save(game)
         })
     }
@@ -79,7 +79,7 @@ export class Templates {
         inputGroup.appendChild(addPlayerBtn)
         appDiv.appendChild(inputGroup)
 
-        inputGroup.addEventListener('submit', (e)=>{
+        inputGroup.addEventListener('submit', (e) => {
             e.preventDefault()
             const playerName = playerNameInput.value
             let newPlayer = new Player(playerName)
@@ -146,53 +146,53 @@ export class Templates {
             // holes.forEach(hole => {
             //     console.log(hole.teeBoxes)
             // })
-            holes.forEach(hole=>{
-                courseHoles.push(hole)
-            })
-            // return holes
+            // holes.forEach(hole=>{
+            //     courseHoles.push(hole)
+            // })
+            return holes
         }
-        let currentGame = storageHandler.fetchGame()
-        console.log('Current Game: ', currentGame)
-        const courseTitle = document.createElement('span')
-        courseTitle.innerHTML = currentGame.course.name
-        getCourseData(currentGame.course.id)
-        appDiv.appendChild(courseTitle)
-        currentGame.players.forEach(player=>{
-            const card = document.createElement('div')
-            card.classList.add('card', 'mt-2')
-            const cardBody = document.createElement('div')
-            cardBody.classList.add('card-body')
-            const cardTitle = document.createElement('h5')
-            cardTitle.classList.add('card-title')
-            cardTitle.innerHTML = player.name
-            const playerScores = document.createElement('ul')
-            playerScores.classList.add('list-group', 'list-group-flush')
-            courseHoles.forEach(hole=>{
-                const holeLi = document.createElement('li')
-                holeLi.classList.add('list-group-item')
-                holeLi.innerHTML = hole.hole
-                playerScores.appendChild(holeLi)
+        let renderCards = async function () {
+            let currentGame = storageHandler.fetchGame()
+            const courseData = await getCourseData(currentGame.course.id)
+            console.log('Current Game: ', currentGame)
+            const courseTitle = document.createElement('span')
+            courseTitle.innerHTML = currentGame.course.name
+            appDiv.appendChild(courseTitle)
+            currentGame.players.forEach(player => {
+                const card = document.createElement('div')
+                card.classList.add('card', 'mt-2', 'mb-2')
+                const cardBody = document.createElement('div')
+                cardBody.classList.add('card-body')
+                const cardTitle = document.createElement('h5')
+                cardTitle.classList.add('card-title')
+                cardTitle.innerHTML = player.name
+                const playerScores = document.createElement('ul')
+                playerScores.classList.add('list-group', 'list-group-flush')
+                courseData.forEach(hole => {
+                    const holeLi = document.createElement('li')
+                    holeLi.classList.add('list-group-item')
+                    holeLi.innerHTML = `${hole.hole} | Par: `
+                    playerScores.appendChild(holeLi)
+                })
+
+                card.appendChild(cardBody)
+                cardBody.appendChild(cardTitle)
+
+                let isOpen = false
+                cardTitle.addEventListener('click', e => {
+                    if (isOpen) {
+                        cardBody.removeChild(playerScores)
+                        isOpen = false
+                    } else {
+                        cardBody.appendChild(playerScores)
+                        isOpen = true
+                    }
+                })
+
+                appDiv.appendChild(card)
             })
-
-            card.appendChild(cardBody)
-            cardBody.appendChild(cardTitle)
-
-            let isOpen = false
-            card.addEventListener('click', e=>{
-                if(isOpen){
-                    cardBody.removeChild(playerScores)
-                    isOpen = false
-                } else {
-                    cardBody.appendChild(playerScores)
-                    isOpen = true
-                }
-            })
-
-            appDiv.appendChild(card)
-        })
-
-
-        
+        }
+        renderCards()
     }
     viewScorecards(appDiv) { }
     viewCard(appDiv) { }
