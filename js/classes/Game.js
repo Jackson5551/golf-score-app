@@ -6,7 +6,7 @@ export class Game{
         this.status = true
     }
     addPlayer(player){
-        if(this.players.length > 4){
+        if(this.players.length < 4){
             this.players.push(player)
         } else {
             alert('You can only have up to 4 players!')

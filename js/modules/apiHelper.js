@@ -21,7 +21,7 @@ export async function runOnLoad(){
         if(allCourses.length === 0 || allCourses.length < courses.length){
             allCourses.push(course)
         } else {
-            
+
         }
     });
 }
@@ -29,7 +29,7 @@ export async function runOnLoad(){
 export const courses = allCourses
 
 
-async function getCourseInfo(courseId) {
+export async function getCourseInfo(courseId) {
     const data = await new Promise((resolve, reject)=>{
         fetch(`https://golf-courses-api.herokuapp.com/courses/${courseId}`)
         .then((response)=>response.json())

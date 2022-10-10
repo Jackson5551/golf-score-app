@@ -1,8 +1,9 @@
 import { Player } from "./Player.js"
 import { Game } from "./Game.js"
+import * as storageHandler from "../modules/storageHandler.js";
 import * as apiHelper from "../modules/apiHelper.js"
 
-let game = new Game;
+let game = new Game
 
 export class Templates {
     constructor(title) {
@@ -23,6 +24,7 @@ export class Templates {
     }
     newGame(appDiv) {
         appDiv.innerHTML = ''
+        
         const div = document.createElement('div')
         div.classList.add('d-flex', 'flex-column', 'justify-content-between', 'align-items-center')
         const editPlayerBtn = document.createElement('span')
@@ -56,9 +58,39 @@ export class Templates {
         div.appendChild(playBtn)
 
         appDiv.appendChild(div)
+
+        playBtn.addEventListener('click', e=>{
+            storageHandler.save(game)
+        })
     }
     editPlayers(appDiv) {
+        appDiv.innerHTML = ''
+        const backBtn = document.createElement('a')
+        backBtn.href = '#/new-game'
+        const inputGroup = document.createElement('form')
+        inputGroup.classList.add('input-group', 'mb-3')
+        const addPlayerBtn = document.createElement('button')
+        addPlayerBtn.classList.add('btn', 'btn-primary')
+        addPlayerBtn.innerHTML = 'Add'
+        addPlayerBtn.type = 'submit'
+        const playerNameInput = document.createElement('input')
+        playerNameInput.classList.add('form-control')
+        inputGroup.appendChild(playerNameInput)
+        inputGroup.appendChild(addPlayerBtn)
+        appDiv.appendChild(inputGroup)
 
+        inputGroup.addEventListener('submit', (e)=>{
+            e.preventDefault()
+            const playerName = playerNameInput.value
+            let newPlayer = new Player(playerName)
+            if (game.players.length < 4) {
+                game.addPlayer(newPlayer)
+                console.log(game.players)
+                playerNameInput.value = ''
+            } else {
+                alert('You can only have 4 players!')
+            }
+        })
     }
     editCourse(appDiv) {
         appDiv.innerHTML = ''
@@ -104,7 +136,64 @@ export class Templates {
         }
         renderCards()
     }
-    game(appDiv) { }
+    game(appDiv) {
+        appDiv.innerHTML = ''
+        let courseHoles = []
+        let getCourseData = async function (courseId) {
+            const courseData = await apiHelper.getCourseInfo(courseId)
+            // console.log(courseData.data.holes)
+            const holes = courseData.data.holes
+            // holes.forEach(hole => {
+            //     console.log(hole.teeBoxes)
+            // })
+            holes.forEach(hole=>{
+                courseHoles.push(hole)
+            })
+            // return holes
+        }
+        let currentGame = storageHandler.fetchGame()
+        console.log('Current Game: ', currentGame)
+        const courseTitle = document.createElement('span')
+        courseTitle.innerHTML = currentGame.course.name
+        getCourseData(currentGame.course.id)
+        appDiv.appendChild(courseTitle)
+        currentGame.players.forEach(player=>{
+            const card = document.createElement('div')
+            card.classList.add('card', 'mt-2')
+            const cardBody = document.createElement('div')
+            cardBody.classList.add('card-body')
+            const cardTitle = document.createElement('h5')
+            cardTitle.classList.add('card-title')
+            cardTitle.innerHTML = player.name
+            const playerScores = document.createElement('ul')
+            playerScores.classList.add('list-group', 'list-group-flush')
+            courseHoles.forEach(hole=>{
+                const holeLi = document.createElement('li')
+                holeLi.classList.add('list-group-item')
+                holeLi.innerHTML = hole.hole
+                playerScores.appendChild(holeLi)
+            })
+
+            card.appendChild(cardBody)
+            cardBody.appendChild(cardTitle)
+
+            let isOpen = false
+            card.addEventListener('click', e=>{
+                if(isOpen){
+                    cardBody.removeChild(playerScores)
+                    isOpen = false
+                } else {
+                    cardBody.appendChild(playerScores)
+                    isOpen = true
+                }
+            })
+
+            appDiv.appendChild(card)
+        })
+
+
+        
+    }
     viewScorecards(appDiv) { }
     viewCard(appDiv) { }
 }
