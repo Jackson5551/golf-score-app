@@ -39,14 +39,14 @@ export class Templates {
         appDiv.innerHTML = ''
         this.backBtn.href = '#/home'
         // this.backBtn.firstChild.className = 'd-flex justify-content-center align-items-center bi bi-house'
-        this.backBtn.firstChild.className = 'align-self-center bi bi-house'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-house fs-1'
         // this.backBtn.firstChild.classList.add('bi', `bi-house`)
         this.titleText.innerHTML = this.title
         const div = document.createElement('div')
         const newGameBtn = document.createElement('span')
-        newGameBtn.innerHTML = `<a href="#/new-game">New Game</a>`
+        newGameBtn.innerHTML = `<a href="#/new-game" class="btn btn-primary">New Game</a>`
         const viewScorecardsBtn = document.createElement('span')
-        viewScorecardsBtn.innerHTML = `<a href="#/saved-scorecards">Saved Scorecards</a>`
+        viewScorecardsBtn.innerHTML = `<a href="#/saved-scorecards" class="btn btn-primary">Saved Scorecards</a>`
 
         div.appendChild(newGameBtn)
         div.appendChild(viewScorecardsBtn)
@@ -56,43 +56,70 @@ export class Templates {
     newGame(appDiv) {
         appDiv.innerHTML = ''
         this.backBtn.href = '#/home'
-        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left fs-1'
         // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         this.titleText.innerHTML = this.title
-        // this.body.insertBefore(nav, this.body.children[0])
-        const div = document.createElement('div')
-        div.classList.add('d-flex', 'flex-column', 'justify-content-between', 'align-items-center')
-        const editPlayerBtn = document.createElement('span')
-        editPlayerBtn.innerHTML = `<a href="#/edit-players" class="btn btn-primary mb-5">Edit Players</a>`
-        const editCourseBtn = document.createElement('span')
-        editCourseBtn.innerHTML = `<a href="#/edit-course" class="btn btn-primary mb-5">Edit Course</a>`
-        const gameInfo = document.createElement('span')
-        const playerInfo = document.createElement('div')
-        if (game.players.length === 0) {
-            playerInfo.innerHTML = 'No Players'
-        } else {
-            playerInfo.innerHTML = ''
-            game.players.forEach(player => {
-                const playerSpan = document.createElement('span')
-                playerSpan.innerHTML = player.name
-                playerInfo.appendChild(playerSpan)
+        const playersCard = document.createElement('div')
+        playersCard.className = 'card mb-2'
+        const playersCardBody = document.createElement('div')
+        playersCardBody.className = 'card-body'
+        const playersCardTitle = document.createElement('h5')
+        playersCardTitle.className = 'card-title'
+        // playersCardTitle.textContent = `${game.players.length} Players`
+        const playersCardList = document.createElement('ul')
+        playersCardList.className = 'list-group list-group-flush'
+        if(game.players.length === 0){
+            playersCardTitle.textContent = `No Players`
+        }else{
+            playersCardList.innerHTML = ''
+            game.players.forEach(player=>{
+                const playersCardListItem = document.createElement('li')
+                playersCardListItem.className = 'list-group-item'
+                playersCardListItem.innerHTML = player.name
+                playersCardList.appendChild(playersCardListItem)
             })
+            playersCardTitle.textContent = `${game.players.length} Players`
         }
+        const playersEditBtn = document.createElement('a')
+        playersEditBtn.className = 'btn btn-primary'
+        playersEditBtn.href = '#/edit-players'
+        playersEditBtn.innerHTML = 'Edit'
+        playersCard.appendChild(playersCardBody)
+        playersCardBody.appendChild(playersCardTitle)
+        playersCardBody.appendChild(playersCardList)
+        playersCardBody.appendChild(playersEditBtn)
+
+        const courseCard = document.createElement('div')
+        courseCard.className = 'card mb-2'
+        const courseCardBody = document.createElement('div')
+        courseCardBody.className = 'card-body'
+        const courseCardTitle = document.createElement('h5')
+        courseCardTitle.className = 'card-title'
         if (!game.course) {
-            gameInfo.innerHTML = 'No Course Selected'
+            courseCardTitle.innerHTML = 'No Course Selected'
         } else {
-            gameInfo.innerHTML = `Course: ${game.course.name}`
+            courseCardTitle.innerHTML = `${game.course.name}`
         }
-        const playBtn = document.createElement('span')
-        playBtn.innerHTML = `<a href="#/game" class="btn btn-success mb-5">PLAY</a>`
+        const address = document.createElement('h6')
+        address.className = 'card-subtitle mb-2 text-muted'
+        address.innerHTML = 'Address'
+        const courseEditBtn = document.createElement('a')
+        courseEditBtn.className = 'btn btn-primary'
+        courseEditBtn.href = '#/edit-course'
+        courseEditBtn.innerHTML = 'Edit'
+        courseCard.appendChild(courseCardBody)
+        courseCardBody.appendChild(courseCardTitle)
+        courseCardBody.appendChild(address)
+        courseCardBody.appendChild(courseEditBtn)
 
-        div.appendChild(editPlayerBtn)
-        div.appendChild(editCourseBtn)
-        div.appendChild(playerInfo)
-        div.appendChild(gameInfo)
-        div.appendChild(playBtn)
+        appDiv.appendChild(playersCard)
+        appDiv.appendChild(courseCard)
 
-        appDiv.appendChild(div)
+        const playBtn = document.createElement('a')
+        playBtn.href = '#/game'
+        playBtn.className = 'btn btn-success btn-lg align-self-stretch'
+        playBtn.innerText = 'PLAY!'
+        appDiv.appendChild(playBtn)
 
         playBtn.addEventListener('click', e => {
             storageHandler.save(game)
@@ -101,7 +128,7 @@ export class Templates {
     editPlayers(appDiv) {
         appDiv.innerHTML = ''
         this.backBtn.href = '#/new-game'
-        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left fs-1'
         // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         this.titleText.innerHTML = this.title
         const backBtn = document.createElement('a')
@@ -127,6 +154,7 @@ export class Templates {
                 console.log(game.players)
                 playerNameInput.value = ''
             } else {
+
                 alert('You can only have 4 players!')
             }
         })
@@ -134,7 +162,7 @@ export class Templates {
     editCourse(appDiv) {
         appDiv.innerHTML = ''
         this.backBtn.href = '#/new-game'
-        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left fs-1'
         // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         this.titleText.innerHTML = this.title
         let renderCards = async function () {
@@ -182,7 +210,7 @@ export class Templates {
     game(appDiv) {
         appDiv.innerHTML = ''
         this.backBtn.href = '#/new-game'
-        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left fs-1'
         // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         this.titleText.innerHTML = this.title
         const loader = document.createElement('div')
