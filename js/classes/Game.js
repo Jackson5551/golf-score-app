@@ -2,6 +2,7 @@ export class Game{
     constructor(course){
         this.id = Date.now().toString()
         this.course = course
+        this.tee = 1
         this.players = []
         this.status = true
     }
@@ -17,6 +18,9 @@ export class Game{
     }
     setCourse(course){
         this.course = course
+    }
+    setTee(tee){
+        this.tee = tee
     }
     endGame(){
         this.status = false

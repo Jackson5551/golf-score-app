@@ -6,11 +6,42 @@ import * as apiHelper from "../modules/apiHelper.js"
 let game = new Game
 
 export class Templates {
-    constructor(title) {
+    constructor(title,link,icon) {
         this.title = title
+        this.link = link
+        this.btnIcon = `${icon}`
+        this.body = document.querySelector('body')
+        this.backBtn = document.querySelector('#backBtn')
+        this.titleText = document.querySelector('#titleText')
+    }   
+    navBar(icon,link){
+        const nav = document.createElement('nav')
+        nav.classList.add('navbar','bg-success','text-light')
+        const div = document.createElement('div')
+        div.classList.add('container-fluid', 'justify-content-between')
+        const backBtn = document.createElement('a')
+        backBtn.classList.add('btn', 'btn-primary')
+        backBtn.href = `#/${link}`
+        backBtn.classList.add('btn', 'btn-success')
+        const backBtnIcon = document.createElement('i')
+        backBtnIcon.classList.add('bi',icon)
+        backBtn.innerHTML = `<h1 class="bi ${icon.toString()}"></h1>`
+        const pageTitle = document.createElement('h1')
+        pageTitle.innerHTML = this.title
+
+        nav.appendChild(div)
+        div.appendChild(backBtn)
+        div.appendChild(pageTitle)
+
+        return nav
     }
     home(appDiv) {
         appDiv.innerHTML = ''
+        this.backBtn.href = '#/home'
+        // this.backBtn.firstChild.className = 'd-flex justify-content-center align-items-center bi bi-house'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-house'
+        // this.backBtn.firstChild.classList.add('bi', `bi-house`)
+        this.titleText.innerHTML = this.title
         const div = document.createElement('div')
         const newGameBtn = document.createElement('span')
         newGameBtn.innerHTML = `<a href="#/new-game">New Game</a>`
@@ -24,7 +55,11 @@ export class Templates {
     }
     newGame(appDiv) {
         appDiv.innerHTML = ''
-
+        this.backBtn.href = '#/home'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left'
+        // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
+        this.titleText.innerHTML = this.title
+        // this.body.insertBefore(nav, this.body.children[0])
         const div = document.createElement('div')
         div.classList.add('d-flex', 'flex-column', 'justify-content-between', 'align-items-center')
         const editPlayerBtn = document.createElement('span')
@@ -65,6 +100,10 @@ export class Templates {
     }
     editPlayers(appDiv) {
         appDiv.innerHTML = ''
+        this.backBtn.href = '#/new-game'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left'
+        // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
+        this.titleText.innerHTML = this.title
         const backBtn = document.createElement('a')
         backBtn.href = '#/new-game'
         const inputGroup = document.createElement('form')
@@ -94,6 +133,10 @@ export class Templates {
     }
     editCourse(appDiv) {
         appDiv.innerHTML = ''
+        this.backBtn.href = '#/new-game'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left'
+        // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
+        this.titleText.innerHTML = this.title
         let renderCards = async function () {
             await apiHelper.runOnLoad()
             const allCourses = apiHelper.courses
@@ -138,7 +181,11 @@ export class Templates {
     }
     game(appDiv) {
         appDiv.innerHTML = ''
-        let courseHoles = []
+        this.backBtn.href = '#/new-game'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left'
+        // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
+        this.titleText.innerHTML = this.title
+        const loader = document.createElement('div')
         let getCourseData = async function (courseId) {
             const courseData = await apiHelper.getCourseInfo(courseId)
             // console.log(courseData.data.holes)
@@ -151,14 +198,18 @@ export class Templates {
             // })
             return holes
         }
+        let updateScoreMarker = function(element, score){
+            element.innerHTML = score
+        }
         let renderCards = async function () {
             let currentGame = storageHandler.fetchGame()
             const courseData = await getCourseData(currentGame.course.id)
             console.log('Current Game: ', currentGame)
-            const courseTitle = document.createElement('span')
+            const courseTitle = document.createElement('h1')
             courseTitle.innerHTML = currentGame.course.name
             appDiv.appendChild(courseTitle)
             currentGame.players.forEach(player => {
+                console.log(player)
                 const card = document.createElement('div')
                 card.classList.add('card', 'mt-2', 'mb-2')
                 const cardBody = document.createElement('div')
@@ -168,13 +219,43 @@ export class Templates {
                 cardTitle.innerHTML = player.name
                 const playerScores = document.createElement('ul')
                 playerScores.classList.add('list-group', 'list-group-flush')
-                courseData.forEach(hole => {
+                courseData.forEach((hole,i=0) => {
+                    let newScore = {
+                        playerId: player.id,
+                        hole: hole.hole,
+                        score: 0
+                    }
+                    if(player.scores.length < 18){
+                        player.scores.push(newScore)
+                        // player.createScore(newScore)
+                    }
                     const holeLi = document.createElement('li')
+                    const holeInput = document.createElement('input')
+                    holeInput.type = 'text'
+                    holeInput.classList.add('form-control')
                     holeLi.classList.add('list-group-item')
-                    holeLi.innerHTML = `${hole.hole} | Par: `
-                    playerScores.appendChild(holeLi)
-                })
+                    holeLi.innerHTML = `<strong>Hole ${hole.hole}</strong> | Par: 0`
+                    holeLi.appendChild(holeInput)
 
+                    holeInput.value = player.scores[i].score
+                    // holeInput.value = player.getScore(i)
+                    holeInput.addEventListener('blur',e=>{
+                        if(parseInt(holeInput.value)){
+                            // game = storageHandler.fetchGame()
+                            storageHandler.save(currentGame)
+                            player.scores[i-1].score = +holeInput.value
+                            storageHandler.save(currentGame)
+                            holeInput.value = player.scores[i-1].score
+                            console.log(currentGame)
+                        } else {
+                            holeInput.value = player.scores[i-1].score
+                        }
+                    })
+
+                    playerScores.appendChild(holeLi)
+                    i++
+
+                })
                 card.appendChild(cardBody)
                 cardBody.appendChild(cardTitle)
 

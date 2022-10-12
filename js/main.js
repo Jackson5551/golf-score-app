@@ -17,35 +17,35 @@ const allPages = [
         title: 'Home',
         path: 'home',
         func: function(){
-            new Templates('Home').home(appDiv)
+            new Templates('Home','bi-house','#/home').home(appDiv)
         }
     }, 
     {
         title: 'New Game',
         path: 'new-game',
         func: function(){
-            new Templates('New Game').newGame(appDiv)
+            new Templates('New Game','bi-arrow-left','#/new-game').newGame(appDiv)
         }
     },
     {
         title: 'Edit Players',
         path: 'edit-players',
         func: function(){
-            new Templates('Edit Players').editPlayers(appDiv)
+            new Templates('Edit Players','bi-arrow-left','#/edit-players').editPlayers(appDiv)
         }
     },
     {
         title: 'Edit Course',
         path: 'edit-course',
         func: function(){
-            new Templates('Edit Course').editCourse(appDiv)
+            new Templates('Edit Course','bi-arrow-left','#/edit-course').editCourse(appDiv)
         }
     },
     {
         title: 'Game',
         path: 'game',
         func: function(){
-            new Templates('Game').game(appDiv)
+            new Templates('Game','bi-arrow-back','#/game').game(appDiv)
         }
     },
     {

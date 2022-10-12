@@ -1,15 +1,21 @@
 export class Player {
-    constructor(name, scores) {
+    constructor(name) {
         this.id = Date.now().toString()
         this.name = name
-        this.scores = scores
+        this.scores = []
         this.status = true
     }
     setName(name){
         this.name = name
     }
-    updateScore(score){
+    getScore(index){
+        return this.scores[index].score
+    }
+    createScore(score){
         this.scores.push(score)
+    }
+    updateScore(newScore, index){
+        this.scores[index] = newScore
     }
     isPlaying(){
         if(this.isPlaying){
@@ -17,5 +23,14 @@ export class Player {
         } else {
             this.isPlaying = true
         }
+    }
+}
+
+class Score{
+    constructor(id, hole, tee){
+        this.id = id
+        this.hole = hole
+        this.tee = tee
+        this.score = 0
     }
 }
