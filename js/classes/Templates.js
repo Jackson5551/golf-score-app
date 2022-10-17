@@ -159,7 +159,6 @@ export class Templates {
         appDiv.innerHTML = ''
         this.backBtn.href = '#/new-game'
         this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left fs-1'
-        // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         this.titleText.innerHTML = this.title
         const backBtn = document.createElement('a')
         backBtn.href = '#/new-game'
@@ -176,7 +175,6 @@ export class Templates {
         inputGroup.appendChild(addPlayerBtn)
         appDiv.appendChild(inputGroup)
         playerNameInput.focus()
-        let currentGame = storageHandler.fetchGame()
         const playerList = document.createElement('ul')
         playerList.className = 'list-group'
         game.players.forEach(player =>{
@@ -394,6 +392,17 @@ export class Templates {
                 })
                 card.appendChild(cardBody)
                 cardBody.appendChild(cardTitle)
+
+                const out = document.createElement('li')
+                out.className = 'list-group-item fs-1'
+                out.innerHTML = `<span>OUT</span>`
+                playerScores.insertBefore(out, playerScores.children[8])
+
+                const in_ = document.createElement('li')
+                in_.className = 'list-group-item fs-1'
+                in_.innerHTML = `<span>IN</span>`
+                playerScores.insertBefore(in_, playerScores.children[19])
+
 
                 let isOpen = false
                 cardTitle.addEventListener('click', e => {
