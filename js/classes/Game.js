@@ -14,7 +14,12 @@ export class Game{
         }
     }
     removePlayer(playerId){
-        // let playerToRemove = this.players.find(player => this.players.id === playerId)
+        this.players.forEach((player, i)=>{
+            if(player.id === playerId){
+                this.players.splice(i, 1)
+            }
+            i++
+        })
     }
     setCourse(course){
         this.course = course

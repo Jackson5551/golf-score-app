@@ -42,14 +42,44 @@ export class Templates {
         this.backBtn.firstChild.className = 'align-self-center bi bi-house fs-1'
         // this.backBtn.firstChild.classList.add('bi', `bi-house`)
         this.titleText.innerHTML = this.title
+        // const div = document.createElement('div')
+        // const newGameBtn = document.createElement('span')
+        // newGameBtn.innerHTML = `<a href="#/new-game" class="btn btn-primary">New Game</a>`
+        // const viewScorecardsBtn = document.createElement('span')
+        // viewScorecardsBtn.innerHTML = `<a href="#/saved-scorecards" class="btn btn-primary">Saved Scorecards</a>`
         const div = document.createElement('div')
-        const newGameBtn = document.createElement('span')
-        newGameBtn.innerHTML = `<a href="#/new-game" class="btn btn-primary">New Game</a>`
-        const viewScorecardsBtn = document.createElement('span')
-        viewScorecardsBtn.innerHTML = `<a href="#/saved-scorecards" class="btn btn-primary">Saved Scorecards</a>`
+        const newGameCard = document.createElement('div')
+        newGameCard.className = 'card mb-2'
+        const newGameCardBody = document.createElement('div')
+        newGameCardBody.className = 'card-body'
+        newGameCard.appendChild(newGameCardBody)
+        const newGameCardTitle = document.createElement('h5')
+        newGameCardTitle.className = 'card-title'
+        newGameCardTitle.textContent = 'New Game'
+        newGameCardBody.appendChild(newGameCardTitle)
+        const newGameBtn = document.createElement('a')
+        newGameBtn.className = 'btn btn-primary'
+        newGameBtn.href = '#/new-game'
+        newGameBtn.innerHTML = 'Create'
+        newGameCardBody.appendChild(newGameBtn)
 
-        div.appendChild(newGameBtn)
-        div.appendChild(viewScorecardsBtn)
+        const viewScorecardsCard = document.createElement('div')
+        viewScorecardsCard.className = 'card mb-2'
+        const viewScorecardsCardBody = document.createElement('div')
+        viewScorecardsCardBody.className = 'card-body'
+        viewScorecardsCard.appendChild(viewScorecardsCardBody)
+        const viewScorecardsCardTitle = document.createElement('h5')
+        viewScorecardsCardTitle.className = 'card-title'
+        viewScorecardsCardTitle.textContent = 'Saved Scorecards'
+        viewScorecardsCardBody.appendChild(viewScorecardsCardTitle)
+        const viewScorecardsBtn = document.createElement('a')
+        viewScorecardsBtn.className = 'btn btn-primary'
+        viewScorecardsBtn.href = '#/view-scorecards'
+        viewScorecardsBtn.innerHTML = 'View'
+        viewScorecardsCardBody.appendChild(viewScorecardsBtn)
+
+        div.appendChild(newGameCard)
+        div.appendChild(viewScorecardsCard)
 
         appDiv.appendChild(div)
     }
@@ -141,10 +171,70 @@ export class Templates {
         addPlayerBtn.type = 'submit'
         const playerNameInput = document.createElement('input')
         playerNameInput.classList.add('form-control')
+        playerNameInput.maxLength = 8
         inputGroup.appendChild(playerNameInput)
         inputGroup.appendChild(addPlayerBtn)
         appDiv.appendChild(inputGroup)
+        playerNameInput.focus()
+        let currentGame = storageHandler.fetchGame()
+        const playerList = document.createElement('ul')
+        playerList.className = 'list-group'
+        game.players.forEach(player =>{
+            const playerLi = document.createElement('li')
+            playerLi.className = 'list-group-item'
 
+            const inputGroup = document.createElement('div')
+            inputGroup.className = 'input-group'
+            const playerName = document.createElement('input')
+            playerName.type = 'text'
+            playerName.className = 'form-control'
+            playerName.value = player.name
+            playerName.disabled = true
+            playerName.maxLength = 8
+            const editBtn = document.createElement('button')
+            editBtn.className = 'btn btn-warning text-light'
+            editBtn.innerHTML = '<i class="bi bi-pencil-fill"></i>'
+            const deleteBtn = document.createElement('button')
+            deleteBtn.className = 'btn btn-danger text-light'
+            deleteBtn.innerHTML = '<i class="bi bi-trash"></i>'
+
+            playerName.addEventListener('blur', ()=>{
+                playerName.disabled = true
+                deleteBtn.disabled = false
+                editBtn.className = 'btn btn-warning text-light'
+                editBtn.innerHTML = '<i class="bi bi-pencil-fill"></i>'
+                player.setName(playerName.value)
+            })
+
+            editBtn.addEventListener('click', ()=>{
+                if(playerName.disabled === true){
+                    playerName.disabled = false
+                    playerName.focus()
+                    deleteBtn.disabled = true
+                    editBtn.className = 'btn btn-success text-light'
+                    editBtn.innerHTML = '<i class="bi bi-save-fill"></i>'
+                } else {
+                    playerName.disabled = true
+                    deleteBtn.disabled = false
+                    editBtn.className = 'btn btn-warning text-light'
+                    editBtn.innerHTML = '<i class="bi bi-pencil-fill"></i>'
+                    player.setName(playerName.value)
+                }
+            })
+
+            deleteBtn.addEventListener('click', ()=>{
+                game.removePlayer(player.id)
+                this.editPlayers(appDiv)
+            })
+
+            inputGroup.appendChild(playerName)
+            inputGroup.appendChild(editBtn)
+            inputGroup.appendChild(deleteBtn)
+            playerLi.appendChild(inputGroup)
+
+            playerList.appendChild(playerLi)
+        })
+        appDiv.appendChild(playerList)
         inputGroup.addEventListener('submit', (e) => {
             e.preventDefault()
             const playerName = playerNameInput.value
@@ -153,6 +243,7 @@ export class Templates {
                 game.addPlayer(newPlayer)
                 console.log(game.players)
                 playerNameInput.value = ''
+                this.editPlayers(appDiv)
             } else {
 
                 alert('You can only have 4 players!')
@@ -165,7 +256,16 @@ export class Templates {
         this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left fs-1'
         // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         this.titleText.innerHTML = this.title
+        const loadingSpinner = document.createElement('div')
+        loadingSpinner.className = 'spinner-border text-success align-self-center'
+        loadingSpinner.role = 'status'
+        const spinner = document.createElement('span')
+        spinner.className = 'visually-hidden'
+        loadingSpinner.appendChild(spinner)
+        loadingSpinner.style.display = 'flex'
+        appDiv.appendChild(loadingSpinner)
         let renderCards = async function () {
+            loadingSpinner.style.display = 'node'
             await apiHelper.runOnLoad()
             const allCourses = apiHelper.courses
             console.log(allCourses)
@@ -213,7 +313,14 @@ export class Templates {
         this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left fs-1'
         // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         this.titleText.innerHTML = this.title
-        const loader = document.createElement('div')
+        const loadingSpinner = document.createElement('div')
+        loadingSpinner.className = 'spinner-border text-success align-self-center'
+        loadingSpinner.role = 'status'
+        const spinner = document.createElement('span')
+        spinner.className = 'visually-hidden'
+        loadingSpinner.appendChild(spinner)
+        loadingSpinner.style.display = 'flex'
+        appDiv.appendChild(loadingSpinner)
         let getCourseData = async function (courseId) {
             const courseData = await apiHelper.getCourseInfo(courseId)
             // console.log(courseData.data.holes)
@@ -232,6 +339,7 @@ export class Templates {
         let renderCards = async function () {
             let currentGame = storageHandler.fetchGame()
             const courseData = await getCourseData(currentGame.course.id)
+            loadingSpinner.style.display = 'none'
             console.log('Current Game: ', currentGame)
             const courseTitle = document.createElement('h1')
             courseTitle.innerHTML = currentGame.course.name
