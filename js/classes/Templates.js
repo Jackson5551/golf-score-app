@@ -297,6 +297,11 @@ export class Templates {
                     console.log(course.name)
                     game.course = course
                     console.log(game)
+                    let getData = async function (){
+                        let data = await apiHelper.getCourseInfo(course.id)
+                        storageHandler.cacheCourseData(data)
+                    }
+                    getData()
                 })
             })
             appDiv.innerHTML = ''
@@ -336,12 +341,29 @@ export class Templates {
         }
         let renderCards = async function () {
             let currentGame = storageHandler.fetchGame()
-            const courseData = await getCourseData(currentGame.course.id)
+            const courseData = await storageHandler.fetchCachedCourseData()
             loadingSpinner.style.display = 'none'
             console.log('Current Game: ', currentGame)
             const courseTitle = document.createElement('h1')
             courseTitle.innerHTML = currentGame.course.name
             appDiv.appendChild(courseTitle)
+            const courseTeeSelector = document.createElement('div')
+            courseTeeSelector.className = 'form-floating'
+            const selector = document.createElement('select')
+            selector.className = 'form-select'
+            selector.id = 'floatingSelect'
+            const label = document.createElement('label')
+            label.htmlFor = 'floatingSelect'
+            label.innerHTML = 'Please Select a Tee'
+            courseTeeSelector.appendChild(selector)
+            courseTeeSelector.appendChild(label)
+            appDiv.appendChild(courseTeeSelector)
+            courseData.data.holes[0].teeBoxes.forEach(tee =>{
+                const teeOption = document.createElement('option')
+                teeOption.value = tee.teeTypeId
+                teeOption.innerText = tee.teeType
+                selector.appendChild(teeOption)
+            })
             currentGame.players.forEach(player => {
                 console.log(player)
                 const card = document.createElement('div')
@@ -353,7 +375,7 @@ export class Templates {
                 cardTitle.innerHTML = player.name
                 const playerScores = document.createElement('ul')
                 playerScores.classList.add('list-group', 'list-group-flush')
-                courseData.forEach((hole,i=0) => {
+                courseData.data.holes.forEach((hole,i=0) => {
                     let newScore = {
                         playerId: player.id,
                         hole: hole.hole,
@@ -368,7 +390,7 @@ export class Templates {
                     holeInput.type = 'text'
                     holeInput.classList.add('form-control')
                     holeLi.classList.add('list-group-item')
-                    holeLi.innerHTML = `<strong>Hole ${hole.hole}</strong> | Par: 0`
+                    holeLi.innerHTML = `<strong>Hole ${hole.hole}</strong> | Par: ${hole.teeBoxes[0].par} | Handicap: ${hole.teeBoxes[0].hcp}`
                     holeLi.appendChild(holeInput)
 
                     holeInput.value = player.scores[i].score

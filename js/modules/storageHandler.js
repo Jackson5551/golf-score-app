@@ -1,5 +1,7 @@
 const LOCAL_STORAGE_KEY = 'golfScoreApp.currentGame'
+const COURSE_DATA_KEY = 'golfScoreApp.courseData'
 let currentGame = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
+let courseData = JSON.parse(localStorage.getItem(COURSE_DATA_KEY))
 
 export function save(game){
     console.log('Saving...')
@@ -17,4 +19,14 @@ export function checkIfExists(){
     } else {
         return false
     }
+}
+
+export function cacheCourseData(course){
+    console.log('Caching...')
+    localStorage.setItem(COURSE_DATA_KEY, JSON.stringify(course))
+}
+
+export function fetchCachedCourseData(){
+    console.log('Reading Cache...')
+    return JSON.parse(localStorage.getItem(COURSE_DATA_KEY))
 }
