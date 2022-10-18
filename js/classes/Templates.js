@@ -318,20 +318,12 @@ export class Templates {
         const courseData = storageHandler.fetchCachedCourseData()
         this.titleText.innerHTML = this.title
 
-        let getCourseData = async function (courseId) {
-            const courseData = await apiHelper.getCourseInfo(courseId)
-            // console.log(courseData.data.holes)
-            const holes = courseData.data.holes
-            // holes.forEach(hole => {
-            //     console.log(hole.teeBoxes)
-            // })
-            // holes.forEach(hole=>{
-            //     courseHoles.push(hole)
-            // })
-            return holes
-        }
-        let updateScoreMarker = function(element, score){
-            element.innerHTML = score
+        let updateScoreMarker = function(element, scores){
+            let total = 0
+            scores.forEach(score=>{
+                total = total + score.score
+            })
+            element.innerHTML = total
         }
         let renderCards = async function () {
             let currentGame = storageHandler.fetchGame()
@@ -351,14 +343,40 @@ export class Templates {
             appDiv.appendChild(courseTitle)
 
             currentGame.players.forEach(player => {
+                const out = document.createElement('li')
+                out.className = 'card-footer fs-1 d-flex justify-content-between'
+                const outLabel = document.createElement('span')
+                outLabel.innerHTML = 'OUT: '
+                const outScore = document.createElement('span')
+                outScore.innerHTML = 0
+                out.appendChild(outLabel)
+                out.appendChild(outScore)
+
+                const in_ = document.createElement('li')
+                in_.className = 'card-footer fs-1 d-flex justify-content-between'
+                const inLabel = document.createElement('span')
+                inLabel.innerHTML = 'IN: '
+                const inScore = document.createElement('span')
+                inScore.innerHTML = 0
+                in_.appendChild(inLabel)
+                in_.appendChild(inScore)
+
                 console.log(player)
                 const card = document.createElement('div')
                 card.classList.add('card', 'mt-2', 'mb-2')
                 const cardBody = document.createElement('div')
-                cardBody.classList.add('card-body')
+                cardBody.className = 'card-footer d-flex justify-content-between'
+                const totalScoreLabel = document.createElement('span')
+                totalScoreLabel.innerHTML = 'TOTAL: '
+                const totalScore = document.createElement('span')
+                totalScore.innerHTML = 0
+                cardBody.appendChild(totalScoreLabel)
+                cardBody.appendChild(totalScore)
+                const cardHeader = document.createElement('div')
+                cardHeader.className = 'card-header'
                 const cardTitle = document.createElement('h5')
                 cardTitle.classList.add('card-title')
-                cardTitle.innerHTML = player.name
+                cardTitle.innerHTML = `<h4>${player.name}</h4>`
                 const playerScores = document.createElement('ul')
                 playerScores.classList.add('list-group', 'list-group-flush')
                 courseData.data.holes.forEach((hole,i=0) => {
@@ -382,13 +400,18 @@ export class Templates {
                     holeInput.value = player.scores[i].score
                     // holeInput.value = player.getScore(i)
                     holeInput.addEventListener('blur',()=>{
-                        if(parseInt(holeInput.value)){
+                        if(parseInt(holeInput.value) || holeInput.value === '0'){
                             // game = storageHandler.fetchGame()
                             storageHandler.save(currentGame)
                             player.scores[i-1].score = +holeInput.value
                             storageHandler.save(currentGame)
                             holeInput.value = player.scores[i-1].score
                             console.log(currentGame)
+                            let outScores = player.scores.slice(0,8)
+                            let inScores = player.scores.slice(8,18)
+                            updateScoreMarker(outScore, outScores)
+                            updateScoreMarker(inScore, inScores)
+                            updateScoreMarker(totalScore, player.scores)
                         } else {
                             holeInput.value = player.scores[i-1].score
                         }
@@ -398,27 +421,23 @@ export class Templates {
                     i++
 
                 })
+                card.appendChild(cardHeader)
                 card.appendChild(cardBody)
-                cardBody.appendChild(cardTitle)
+                cardHeader.appendChild(cardTitle)
 
-                const out = document.createElement('li')
-                out.className = 'list-group-item fs-1'
-                out.innerHTML = `<span>OUT</span>`
+
                 playerScores.insertBefore(out, playerScores.children[8])
 
-                const in_ = document.createElement('li')
-                in_.className = 'list-group-item fs-1'
-                in_.innerHTML = `<span>IN</span>`
                 playerScores.insertBefore(in_, playerScores.children[19])
 
 
                 let isOpen = false
                 cardTitle.addEventListener('click', e => {
                     if (isOpen) {
-                        cardBody.removeChild(playerScores)
+                        card.removeChild(playerScores)
                         isOpen = false
                     } else {
-                        cardBody.appendChild(playerScores)
+                        card.appendChild(playerScores)
                         isOpen = true
                     }
                 })

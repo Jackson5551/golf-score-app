@@ -5,6 +5,8 @@ export class Game{
         this.tee = 1
         this.players = []
         this.status = true
+        this.out = 0
+        this.in = 0
     }
     addPlayer(player){
         if(this.players.length < 4){
