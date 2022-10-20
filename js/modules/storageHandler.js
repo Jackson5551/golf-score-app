@@ -1,7 +1,11 @@
+import { SavedGames } from "../classes/SavedGames.js"
+
 const LOCAL_STORAGE_KEY = 'golfScoreApp.currentGame'
 const COURSE_DATA_KEY = 'golfScoreApp.courseData'
+const SAVED_SCORECARDS_KEY = 'golfScoreApp.savedScorecards'
 let currentGame = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
 let courseData = JSON.parse(localStorage.getItem(COURSE_DATA_KEY))
+let savedGames = JSON.parse(localStorage.getItem(SAVED_SCORECARDS_KEY))
 
 export function save(game){
     console.log('Saving...')
@@ -29,4 +33,21 @@ export function cacheCourseData(course){
 export function fetchCachedCourseData(){
     console.log('Reading Cache...')
     return JSON.parse(localStorage.getItem(COURSE_DATA_KEY))
+}
+
+export function setSavedScorecards(game){
+    if(!savedGames){
+        let lsSavedGames = new SavedGames()
+        lsSavedGames.add(game)
+        localStorage.setItem(SAVED_SCORECARDS_KEY, JSON.stringify(lsSavedGames))
+    } else {
+        let lsSavedGames = JSON.parse(localStorage.getItem(SAVED_SCORECARDS_KEY))
+        lsSavedGames.games.push(game)
+        localStorage.setItem(SAVED_SCORECARDS_KEY, JSON.stringify(lsSavedGames))
+    }
+}
+
+export function fetchSavedScorecards(){
+    console.log('Fetching...')
+    return JSON.parse(localStorage.getItem(SAVED_SCORECARDS_KEY))
 }

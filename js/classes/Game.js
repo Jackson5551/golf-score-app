@@ -1,12 +1,11 @@
 export class Game{
     constructor(course){
-        this.id = Date.now().toString()
+        this.id = Date.now()
         this.course = course
         this.tee = 1
+        this.teeName = ''
         this.players = []
         this.status = true
-        this.out = 0
-        this.in = 0
     }
     addPlayer(player){
         if(this.players.length < 4){

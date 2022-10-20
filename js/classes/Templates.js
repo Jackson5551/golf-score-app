@@ -1,5 +1,6 @@
 import { Player } from "./Player.js"
 import { Game } from "./Game.js"
+import { SavedGames } from "./SavedGames.js"
 import * as storageHandler from "../modules/storageHandler.js";
 import * as apiHelper from "../modules/apiHelper.js"
 
@@ -74,7 +75,7 @@ export class Templates {
         viewScorecardsCardBody.appendChild(viewScorecardsCardTitle)
         const viewScorecardsBtn = document.createElement('a')
         viewScorecardsBtn.className = 'btn btn-primary'
-        viewScorecardsBtn.href = '#/view-scorecards'
+        viewScorecardsBtn.href = '#/saved-scorecards'
         viewScorecardsBtn.innerHTML = 'View'
         viewScorecardsCardBody.appendChild(viewScorecardsBtn)
 
@@ -444,6 +445,15 @@ export class Templates {
 
                 appDiv.appendChild(card)
             })
+            const endGameBtn = document.createElement('a')
+            endGameBtn.href = '#/saved-scorecards'
+            endGameBtn.className = 'btn btn-success mt-2'
+            endGameBtn.innerHTML = 'End Game'
+            endGameBtn.addEventListener('click', ()=>{
+                let gameToEnd = storageHandler.fetchGame()
+                storageHandler.setSavedScorecards(gameToEnd)
+            })
+            appDiv.appendChild(endGameBtn)
         }
         const courseTeeSelector = document.createElement('div')
         courseTeeSelector.className = 'input-group'
@@ -476,7 +486,43 @@ export class Templates {
             renderCards()
         })
         appDiv.appendChild(selector)
+
     }
-    viewScorecards(appDiv) { }
+    viewScorecards(appDiv) {
+        appDiv.innerHTML = ''
+        this.backBtn.href = '#/home'
+        this.backBtn.firstChild.className = 'align-self-center bi bi-arrow-left fs-1'
+        // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
+        this.titleText.innerHTML = this.title
+        const getSavedScorecards = storageHandler.fetchSavedScorecards()
+        const savedGamesUl = document.createElement('div')
+        savedGamesUl.className = 'list-group'
+        getSavedScorecards.games.forEach(game =>{
+            const savedGameCard = document.createElement('a')
+            savedGameCard.className = 'list-group-item list-group-item-action'
+            const savedGameCardHeader = document.createElement('div')
+            savedGameCardHeader.className = 'd-flex justify-content-between'
+            const savedGameCardTitle = document.createElement('h5')
+            savedGameCardTitle.className = 'mb-1'
+            savedGameCardTitle.innerHTML = game.course.name
+            const small1 = document.createElement('small')
+            let gameDate = new Date(game.id)
+            small1.innerHTML = gameDate.toLocaleDateString('en-US')
+            savedGameCardHeader.appendChild(savedGameCardTitle)
+            savedGameCardHeader.appendChild(small1)
+            savedGameCard.appendChild(savedGameCardHeader)
+            const p = document.createElement('p')
+            p.className = 'mb-1'
+            game.players.forEach(player=>{
+                p.innerHTML = p.innerHTML + `${player.name} `
+            })
+            const small2 = document.createElement('small')
+            savedGameCard.appendChild(p)
+            savedGameCard.appendChild(small2)
+
+            savedGamesUl.appendChild(savedGameCard)
+        })
+        appDiv.appendChild(savedGamesUl)
+    }
     viewCard(appDiv) { }
 }
