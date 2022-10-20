@@ -14,6 +14,7 @@ export class Templates {
         this.body = document.querySelector('body')
         this.backBtn = document.querySelector('#backBtn')
         this.titleText = document.querySelector('#titleText')
+        this.warningArea = document.querySelector('#warningArea')
     }   
     navBar(icon,link){
         const nav = document.createElement('nav')
@@ -153,6 +154,22 @@ export class Templates {
         appDiv.appendChild(playBtn)
 
         playBtn.addEventListener('click', e => {
+            if(!game.course || game.players.length === 0){
+                e.preventDefault()
+                this.warningArea.innerHTML = ''
+                this.warningArea.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show')
+                const alertContent = document.createElement('span')
+                alertContent.innerHTML = 'You must add players and select a course!'
+                const alertBtn = document.createElement('button')
+                alertBtn.className = 'btn-close'
+                alertBtn.ariaLabel = 'Close'
+                alertBtn.addEventListener('click', () => {
+                    this.warningArea.innerHTML = ''
+                    this.warningArea.classList.remove('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show')
+                })
+                this.warningArea.appendChild(alertContent)
+                this.warningArea.appendChild(alertBtn)
+            }
             storageHandler.save(game)
         })
     }
@@ -244,8 +261,19 @@ export class Templates {
                 playerNameInput.value = ''
                 this.editPlayers(appDiv)
             } else {
-
-                alert('You can only have 4 players!')
+                this.warningArea.innerHTML = ''
+                this.warningArea.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show')
+                const alertContent = document.createElement('span')
+                alertContent.innerHTML = 'You can only have up to 4 players!'
+                const alertBtn = document.createElement('button')
+                alertBtn.className = 'btn-close'
+                alertBtn.ariaLabel='Close'
+                alertBtn.addEventListener('click', ()=>{
+                    this.warningArea.innerHTML = ''
+                    this.warningArea.classList.remove('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show')
+                })
+                this.warningArea.appendChild(alertContent)
+                this.warningArea.appendChild(alertBtn)
             }
         })
     }
