@@ -473,9 +473,10 @@ export class Templates {
 
                 appDiv.appendChild(card)
             })
+
             const endGameBtn = document.createElement('a')
             endGameBtn.href = '#/saved-scorecards'
-            endGameBtn.className = 'btn btn-success mt-2'
+            endGameBtn.className = 'btn btn-success mt-2 mb-2'
             endGameBtn.innerHTML = 'End Game'
             endGameBtn.addEventListener('click', ()=>{
                 let gameToEnd = storageHandler.fetchGame()
@@ -552,5 +553,7 @@ export class Templates {
         })
         appDiv.appendChild(savedGamesUl)
     }
-    viewCard(appDiv) { }
+    viewCard(appDiv) {
+        
+    }
 }
