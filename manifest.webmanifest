@@ -28,7 +28,7 @@
         }
     ],
     "id": "#/home",
-    "start_url": "/",
+    "start_url": "https://jackson5551.github.io/",
     "description": "A Golf Scorecard Application",
     "background_color": "#fff",
     "display": "standalone",
