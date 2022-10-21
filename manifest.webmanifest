@@ -27,12 +27,12 @@
             "purpose": "maskable"
         }
     ],
-    "id": "#/home",
-    "start_url": "https://jackson5551.github.io/",
+    "id": "https://jackson5551.github.io/golf-score-app/#/home",
+    "start_url": "https://jackson5551.github.io/golf-score-app/",
     "description": "A Golf Scorecard Application",
     "background_color": "#fff",
     "display": "standalone",
-    "scope":"https://jackson5551.github.io/",
+    "scope":"https://jackson5551.github.io/golf-score-app/",
     "theme_color": "#198754",
     "screenshots":[
 
