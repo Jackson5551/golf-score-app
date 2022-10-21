@@ -32,7 +32,7 @@
     "description": "A Golf Scorecard Application",
     "background_color": "#fff",
     "display": "standalone",
-    "scope":"",
+    "scope":"https://jackson5551.github.io/",
     "theme_color": "#198754",
     "screenshots":[
 
