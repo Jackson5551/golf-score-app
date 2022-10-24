@@ -53,14 +53,14 @@ export class Templates {
         const newGameCard = document.createElement('div')
         newGameCard.className = 'card mb-2'
         const newGameCardBody = document.createElement('div')
-        newGameCardBody.className = 'card-body'
+        newGameCardBody.className = 'card-body d-flex justify-content-between align-items-center'
         newGameCard.appendChild(newGameCardBody)
         const newGameCardTitle = document.createElement('h5')
         newGameCardTitle.className = 'card-title'
         newGameCardTitle.textContent = 'New Game'
         newGameCardBody.appendChild(newGameCardTitle)
         const newGameBtn = document.createElement('a')
-        newGameBtn.className = 'btn btn-primary'
+        newGameBtn.className = 'btn btn-primary align-self-stretch'
         newGameBtn.href = '#/new-game'
         newGameBtn.innerHTML = 'Create'
         newGameCardBody.appendChild(newGameBtn)
@@ -68,14 +68,14 @@ export class Templates {
         const viewScorecardsCard = document.createElement('div')
         viewScorecardsCard.className = 'card mb-2'
         const viewScorecardsCardBody = document.createElement('div')
-        viewScorecardsCardBody.className = 'card-body'
+        viewScorecardsCardBody.className = 'card-body d-flex justify-content-between align-items-center'
         viewScorecardsCard.appendChild(viewScorecardsCardBody)
         const viewScorecardsCardTitle = document.createElement('h5')
         viewScorecardsCardTitle.className = 'card-title'
         viewScorecardsCardTitle.textContent = 'Saved Scorecards'
         viewScorecardsCardBody.appendChild(viewScorecardsCardTitle)
         const viewScorecardsBtn = document.createElement('a')
-        viewScorecardsBtn.className = 'btn btn-primary'
+        viewScorecardsBtn.className = 'btn btn-primary align-self-stretch'
         viewScorecardsBtn.href = '#/saved-scorecards'
         viewScorecardsBtn.innerHTML = 'View'
         viewScorecardsCardBody.appendChild(viewScorecardsBtn)
@@ -113,7 +113,7 @@ export class Templates {
             playersCardTitle.textContent = `${game.players.length} Players`
         }
         const playersEditBtn = document.createElement('a')
-        playersEditBtn.className = 'btn btn-primary'
+        playersEditBtn.className = 'btn btn-primary mt-2'
         playersEditBtn.href = '#/edit-players'
         playersEditBtn.innerHTML = 'Edit'
         playersCard.appendChild(playersCardBody)
@@ -130,14 +130,14 @@ export class Templates {
         if (!game.course) {
             courseCardTitle.innerHTML = 'No Course Selected'
         } else {
-            courseCardTitle.innerHTML = `${game.course.name}`
+            courseCardTitle.innerHTML = `Course: ${game.course.name}`
         }
         const address = document.createElement('h6')
         address.className = 'card-subtitle mb-2 text-muted'
         let courseData = storageHandler.fetchCachedCourseData()
         // address.innerHTML = courseData.data.addr1
         const courseEditBtn = document.createElement('a')
-        courseEditBtn.className = 'btn btn-primary'
+        courseEditBtn.className = 'btn btn-primary mt-2'
         courseEditBtn.href = '#/edit-course'
         courseEditBtn.innerHTML = 'Edit'
         courseCard.appendChild(courseCardBody)
@@ -478,7 +478,7 @@ export class Templates {
 
             const endGameBtn = document.createElement('a')
             endGameBtn.href = '#/saved-scorecards'
-            endGameBtn.className = 'btn btn-success mt-2 mb-2'
+            endGameBtn.className = 'btn btn-success btn-lg mt-2 mb-2'
             endGameBtn.innerHTML = 'End Game'
             endGameBtn.addEventListener('click', ()=>{
                 let gameToEnd = storageHandler.fetchGame()
