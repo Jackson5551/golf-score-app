@@ -2,7 +2,7 @@ export class Game{
     constructor(course){
         this.id = Date.now()
         this.course = course
-        this.tee = 1
+        this.tee = null
         this.teeName = ''
         this.players = []
         this.status = true

@@ -134,7 +134,8 @@ export class Templates {
         }
         const address = document.createElement('h6')
         address.className = 'card-subtitle mb-2 text-muted'
-        address.innerHTML = 'Address'
+        let courseData = storageHandler.fetchCachedCourseData()
+        // address.innerHTML = courseData.data.addr1
         const courseEditBtn = document.createElement('a')
         courseEditBtn.className = 'btn btn-primary'
         courseEditBtn.href = '#/edit-course'
@@ -169,8 +170,9 @@ export class Templates {
                 })
                 this.warningArea.appendChild(alertContent)
                 this.warningArea.appendChild(alertBtn)
+            } else {
+                storageHandler.save(game)
             }
-            storageHandler.save(game)
         })
     }
     editPlayers(appDiv) {
@@ -346,6 +348,7 @@ export class Templates {
         // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         const courseData = storageHandler.fetchCachedCourseData()
         this.titleText.innerHTML = this.title
+        let currentGame = storageHandler.fetchGame()
 
         let updateScoreMarker = function(element, scores){
             let total = 0
@@ -355,7 +358,6 @@ export class Templates {
             element.innerHTML = total
         }
         let renderCards = async function () {
-            let currentGame = storageHandler.fetchGame()
             const loadingSpinner = document.createElement('div')
             loadingSpinner.className = 'spinner-border text-success align-self-center'
             loadingSpinner.role = 'status'
@@ -377,7 +379,7 @@ export class Templates {
                 const outLabel = document.createElement('span')
                 outLabel.innerHTML = 'OUT: '
                 const outScore = document.createElement('span')
-                outScore.innerHTML = 0
+                updateScoreMarker(outScore, player.scores.slice(0, 8))
                 out.appendChild(outLabel)
                 out.appendChild(outScore)
 
@@ -386,7 +388,7 @@ export class Templates {
                 const inLabel = document.createElement('span')
                 inLabel.innerHTML = 'IN: '
                 const inScore = document.createElement('span')
-                inScore.innerHTML = 0
+                updateScoreMarker(inScore, player.scores.slice(8, 18))
                 in_.appendChild(inLabel)
                 in_.appendChild(inScore)
 
@@ -398,7 +400,7 @@ export class Templates {
                 const totalScoreLabel = document.createElement('span')
                 totalScoreLabel.innerHTML = 'TOTAL: '
                 const totalScore = document.createElement('span')
-                totalScore.innerHTML = 0
+                updateScoreMarker(totalScore, player.scores)
                 cardBody.appendChild(totalScoreLabel)
                 cardBody.appendChild(totalScore)
                 const cardHeader = document.createElement('div')
@@ -484,37 +486,47 @@ export class Templates {
             })
             appDiv.appendChild(endGameBtn)
         }
-        const courseTeeSelector = document.createElement('div')
-        courseTeeSelector.className = 'input-group'
-        const selector = document.createElement('select')
-        // selector.type = 'select'
-        selector.className = 'form-select'
-        selector.id = 'floatingSelect'
-        const label = document.createElement('label')
-        label.htmlFor = 'floatingSelect'
-        label.innerHTML = 'Please Select a Tee'
-        courseTeeSelector.appendChild(selector)
-        courseTeeSelector.appendChild(label)
-        appDiv.appendChild(courseTeeSelector)
-        const defaultSelectOption = document.createElement('option')
-        defaultSelectOption.innerText = 'Select a Tee'
-        selector.appendChild(defaultSelectOption)
-        courseData.data.holes[0].teeBoxes.forEach((tee,i) => {
-            const teeOption = document.createElement('option')
-            // teeOption.value = tee.teeTypeId
-            teeOption.value = i
-            teeOption.innerText = tee.teeType
-            selector.appendChild(teeOption)
-            i++
-        })
-        selector.addEventListener('change', () => {
-            selector.style.display = 'none'
-            label.style.display = 'none'
-            game.tee = selector.value
-            storageHandler.save(game)
+
+        let renderTeeSelector = async function ( ) {
+            storageHandler.clearGame()
+            const courseTeeSelector = document.createElement('div')
+            courseTeeSelector.className = 'input-group'
+            const selector = document.createElement('select')
+            // selector.type = 'select'
+            selector.className = 'form-select'
+            selector.id = 'floatingSelect'
+            const label = document.createElement('label')
+            label.htmlFor = 'floatingSelect'
+            label.innerHTML = 'Please Select a Tee'
+            courseTeeSelector.appendChild(selector)
+            courseTeeSelector.appendChild(label)
+            appDiv.appendChild(courseTeeSelector)
+            const defaultSelectOption = document.createElement('option')
+            defaultSelectOption.innerText = 'Select a Tee'
+            selector.appendChild(defaultSelectOption)
+            courseData.data.holes[0].teeBoxes.forEach((tee, i) => {
+                const teeOption = document.createElement('option')
+                // teeOption.value = tee.teeTypeId
+                teeOption.value = i
+                teeOption.innerText = tee.teeType
+                selector.appendChild(teeOption)
+                i++
+            })
+            selector.addEventListener('change', () => {
+                selector.style.display = 'none'
+                label.style.display = 'none'
+                currentGame.tee = selector.value
+                storageHandler.save(currentGame)
+                renderCards()
+            })
+            appDiv.appendChild(selector)
+        }
+        if(currentGame.tee === null){
+            renderTeeSelector()
+        } else {
             renderCards()
-        })
-        appDiv.appendChild(selector)
+        }
+
 
     }
     viewScorecards(appDiv) {

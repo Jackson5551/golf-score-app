@@ -17,6 +17,10 @@ export function fetchGame(){
     return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
 }
 
+export function clearGame(){
+    localStorage.removeItem(LOCAL_STORAGE_KEY)
+}
+
 export function checkIfExists(){
     if(currentGame !== null){
         return true
