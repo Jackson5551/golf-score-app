@@ -7,7 +7,7 @@ import * as apiHelper from "../modules/apiHelper.js"
 let game = new Game
 
 export class Templates {
-    constructor(title,link,icon) {
+    constructor(title, link, icon) {
         this.title = title
         this.link = link
         this.btnIcon = `${icon}`
@@ -15,10 +15,10 @@ export class Templates {
         this.backBtn = document.querySelector('#backBtn')
         this.titleText = document.querySelector('#titleText')
         this.warningArea = document.querySelector('#warningArea')
-    }   
-    navBar(icon,link){
+    }
+    navBar(icon, link) {
         const nav = document.createElement('nav')
-        nav.classList.add('navbar','bg-success','text-light')
+        nav.classList.add('navbar', 'bg-success', 'text-light')
         const div = document.createElement('div')
         div.classList.add('container-fluid', 'justify-content-between')
         const backBtn = document.createElement('a')
@@ -26,7 +26,7 @@ export class Templates {
         backBtn.href = `#/${link}`
         backBtn.classList.add('btn', 'btn-success')
         const backBtnIcon = document.createElement('i')
-        backBtnIcon.classList.add('bi',icon)
+        backBtnIcon.classList.add('bi', icon)
         backBtn.innerHTML = `<h1 class="bi ${icon.toString()}"></h1>`
         const pageTitle = document.createElement('h1')
         pageTitle.innerHTML = this.title
@@ -60,7 +60,7 @@ export class Templates {
         newGameCardTitle.textContent = 'New Game'
         newGameCardBody.appendChild(newGameCardTitle)
         const newGameBtn = document.createElement('a')
-        newGameBtn.className = 'btn btn-primary align-self-stretch'
+        newGameBtn.className = 'btn btn-success align-self-stretch'
         newGameBtn.href = '#/new-game'
         newGameBtn.innerHTML = 'Create'
         newGameCardBody.appendChild(newGameBtn)
@@ -75,7 +75,7 @@ export class Templates {
         viewScorecardsCardTitle.textContent = 'Saved Scorecards'
         viewScorecardsCardBody.appendChild(viewScorecardsCardTitle)
         const viewScorecardsBtn = document.createElement('a')
-        viewScorecardsBtn.className = 'btn btn-primary align-self-stretch'
+        viewScorecardsBtn.className = 'btn btn-success align-self-stretch'
         viewScorecardsBtn.href = '#/saved-scorecards'
         viewScorecardsBtn.innerHTML = 'View'
         viewScorecardsCardBody.appendChild(viewScorecardsBtn)
@@ -100,11 +100,11 @@ export class Templates {
         // playersCardTitle.textContent = `${game.players.length} Players`
         const playersCardList = document.createElement('ul')
         playersCardList.className = 'list-group list-group-flush'
-        if(game.players.length === 0){
+        if (game.players.length === 0) {
             playersCardTitle.textContent = `No Players`
-        }else{
+        } else {
             playersCardList.innerHTML = ''
-            game.players.forEach(player=>{
+            game.players.forEach(player => {
                 const playersCardListItem = document.createElement('li')
                 playersCardListItem.className = 'list-group-item'
                 playersCardListItem.innerHTML = player.name
@@ -155,7 +155,7 @@ export class Templates {
         appDiv.appendChild(playBtn)
 
         playBtn.addEventListener('click', e => {
-            if(!game.course || game.players.length === 0){
+            if (!game.course || game.players.length === 0) {
                 e.preventDefault()
                 this.warningArea.innerHTML = ''
                 this.warningArea.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show')
@@ -197,7 +197,7 @@ export class Templates {
         playerNameInput.focus()
         const playerList = document.createElement('ul')
         playerList.className = 'list-group'
-        game.players.forEach(player =>{
+        game.players.forEach(player => {
             const playerLi = document.createElement('li')
             playerLi.className = 'list-group-item'
 
@@ -216,7 +216,7 @@ export class Templates {
             deleteBtn.className = 'btn btn-danger text-light'
             deleteBtn.innerHTML = '<i class="bi bi-trash"></i>'
 
-            playerName.addEventListener('blur', ()=>{
+            playerName.addEventListener('blur', () => {
                 playerName.disabled = true
                 deleteBtn.disabled = false
                 editBtn.className = 'btn btn-warning text-light'
@@ -224,8 +224,8 @@ export class Templates {
                 player.setName(playerName.value)
             })
 
-            editBtn.addEventListener('click', ()=>{
-                if(playerName.disabled === true){
+            editBtn.addEventListener('click', () => {
+                if (playerName.disabled === true) {
                     playerName.disabled = false
                     playerName.focus()
                     deleteBtn.disabled = true
@@ -240,7 +240,7 @@ export class Templates {
                 }
             })
 
-            deleteBtn.addEventListener('click', ()=>{
+            deleteBtn.addEventListener('click', () => {
                 game.removePlayer(player.id)
                 this.editPlayers(appDiv)
             })
@@ -257,7 +257,7 @@ export class Templates {
             e.preventDefault()
             const playerName = playerNameInput.value
             let newPlayer = new Player(playerName)
-            if (game.players.length < 4) {
+            if (game.players.length < 4 && playerName.trim() !== '') {
                 game.addPlayer(newPlayer)
                 console.log(game.players)
                 playerNameInput.value = ''
@@ -266,11 +266,11 @@ export class Templates {
                 this.warningArea.innerHTML = ''
                 this.warningArea.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show')
                 const alertContent = document.createElement('span')
-                alertContent.innerHTML = 'You can only have up to 4 players!'
+                alertContent.innerHTML = 'You can only have up to 4 players and names can\'t be blank!'
                 const alertBtn = document.createElement('button')
                 alertBtn.className = 'btn-close'
-                alertBtn.ariaLabel='Close'
-                alertBtn.addEventListener('click', ()=>{
+                alertBtn.ariaLabel = 'Close'
+                alertBtn.addEventListener('click', () => {
                     this.warningArea.innerHTML = ''
                     this.warningArea.classList.remove('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show')
                 })
@@ -328,7 +328,7 @@ export class Templates {
                     console.log(course.name)
                     game.course = course
                     console.log(game)
-                    let getData = async function (){
+                    let getData = async function () {
                         let data = await apiHelper.getCourseInfo(course.id)
                         storageHandler.cacheCourseData(data)
                     }
@@ -350,9 +350,9 @@ export class Templates {
         this.titleText.innerHTML = this.title
         let currentGame = storageHandler.fetchGame()
 
-        let updateScoreMarker = function(element, scores){
+        let updateScoreMarker = function (element, scores) {
             let total = 0
-            scores.forEach(score=>{
+            scores.forEach(score => {
                 total = total + score.score
             })
             element.innerHTML = total
@@ -370,7 +370,7 @@ export class Templates {
             loadingSpinner.style.display = 'none'
             console.log('Current Game: ', currentGame)
             const courseTitle = document.createElement('h1')
-            courseTitle.innerHTML = currentGame.course.name
+            courseTitle.innerHTML = currentGame.course.name + ' - ' + currentGame.teeName
             appDiv.appendChild(courseTitle)
 
             currentGame.players.forEach(player => {
@@ -379,7 +379,7 @@ export class Templates {
                 const outLabel = document.createElement('span')
                 outLabel.innerHTML = 'OUT: '
                 const outScore = document.createElement('span')
-                updateScoreMarker(outScore, player.scores.slice(0, 8))
+                updateScoreMarker(outScore, player.scores.slice(0, 9))
                 out.appendChild(outLabel)
                 out.appendChild(outScore)
 
@@ -388,7 +388,7 @@ export class Templates {
                 const inLabel = document.createElement('span')
                 inLabel.innerHTML = 'IN: '
                 const inScore = document.createElement('span')
-                updateScoreMarker(inScore, player.scores.slice(8, 18))
+                updateScoreMarker(inScore, player.scores.slice(9, 19))
                 in_.appendChild(inLabel)
                 in_.appendChild(inScore)
 
@@ -410,13 +410,13 @@ export class Templates {
                 cardTitle.innerHTML = `<h4>${player.name}</h4>`
                 const playerScores = document.createElement('ul')
                 playerScores.classList.add('list-group', 'list-group-flush')
-                courseData.data.holes.forEach((hole,i=0) => {
+                courseData.data.holes.forEach((hole, i = 0) => {
                     let newScore = {
                         playerId: player.id,
                         hole: hole.hole,
                         score: 0
                     }
-                    if(player.scores.length < 18){
+                    if (player.scores.length < 18) {
                         player.scores.push(newScore)
                         // player.createScore(newScore)
                     }
@@ -430,21 +430,21 @@ export class Templates {
 
                     holeInput.value = player.scores[i].score
                     // holeInput.value = player.getScore(i)
-                    holeInput.addEventListener('blur',()=>{
-                        if(parseInt(holeInput.value) || holeInput.value === '0'){
+                    holeInput.addEventListener('blur', () => {
+                        if (parseInt(holeInput.value) || holeInput.value === '0') {
                             // game = storageHandler.fetchGame()
                             storageHandler.save(currentGame)
-                            player.scores[i-1].score = +holeInput.value
+                            player.scores[i - 1].score = +holeInput.value
                             storageHandler.save(currentGame)
-                            holeInput.value = player.scores[i-1].score
+                            holeInput.value = player.scores[i - 1].score
                             console.log(currentGame)
-                            let outScores = player.scores.slice(0,8)
-                            let inScores = player.scores.slice(8,18)
+                            let outScores = player.scores.slice(0, 9)
+                            let inScores = player.scores.slice(9, 19)
                             updateScoreMarker(outScore, outScores)
                             updateScoreMarker(inScore, inScores)
                             updateScoreMarker(totalScore, player.scores)
                         } else {
-                            holeInput.value = player.scores[i-1].score
+                            holeInput.value = player.scores[i - 1].score
                         }
                     })
 
@@ -457,7 +457,7 @@ export class Templates {
                 cardHeader.appendChild(cardTitle)
 
 
-                playerScores.insertBefore(out, playerScores.children[8])
+                playerScores.insertBefore(out, playerScores.children[9])
 
                 playerScores.insertBefore(in_, playerScores.children[19])
 
@@ -480,14 +480,14 @@ export class Templates {
             endGameBtn.href = '#/saved-scorecards'
             endGameBtn.className = 'btn btn-success btn-lg mt-2 mb-2'
             endGameBtn.innerHTML = 'End Game'
-            endGameBtn.addEventListener('click', ()=>{
+            endGameBtn.addEventListener('click', () => {
                 let gameToEnd = storageHandler.fetchGame()
                 storageHandler.setSavedScorecards(gameToEnd)
             })
             appDiv.appendChild(endGameBtn)
         }
 
-        let renderTeeSelector = async function ( ) {
+        let renderTeeSelector = async function () {
             storageHandler.clearGame()
             const courseTeeSelector = document.createElement('div')
             courseTeeSelector.className = 'input-group'
@@ -505,23 +505,26 @@ export class Templates {
             defaultSelectOption.innerText = 'Select a Tee'
             selector.appendChild(defaultSelectOption)
             courseData.data.holes[0].teeBoxes.forEach((tee, i) => {
-                const teeOption = document.createElement('option')
-                // teeOption.value = tee.teeTypeId
-                teeOption.value = i
-                teeOption.innerText = tee.teeType
-                selector.appendChild(teeOption)
-                i++
+                if (tee.teeType !== 'auto change location') {
+                    const teeOption = document.createElement('option')
+                    // teeOption.value = tee.teeTypeId
+                    teeOption.value = i
+                    teeOption.innerText = tee.teeType.toUpperCase()
+                    selector.appendChild(teeOption)
+                    i++
+                }
             })
             selector.addEventListener('change', () => {
                 selector.style.display = 'none'
                 label.style.display = 'none'
                 currentGame.tee = selector.value
+                currentGame.teeName = selector.children[currentGame.tee].textContent
                 storageHandler.save(currentGame)
                 renderCards()
             })
             appDiv.appendChild(selector)
         }
-        if(currentGame.tee === null){
+        if (currentGame.tee === null) {
             renderTeeSelector()
         } else {
             renderCards()
@@ -538,14 +541,14 @@ export class Templates {
         const getSavedScorecards = storageHandler.fetchSavedScorecards()
         const savedGamesUl = document.createElement('div')
         savedGamesUl.className = 'list-group'
-        getSavedScorecards.games.forEach(game =>{
+        getSavedScorecards.games.forEach(game => {
             const savedGameCard = document.createElement('a')
             savedGameCard.className = 'list-group-item list-group-item-action'
             const savedGameCardHeader = document.createElement('div')
             savedGameCardHeader.className = 'd-flex justify-content-between'
             const savedGameCardTitle = document.createElement('h5')
             savedGameCardTitle.className = 'mb-1'
-            savedGameCardTitle.innerHTML = game.course.name
+            savedGameCardTitle.innerHTML = game.course.name + ' - ' + game.teeName
             const small1 = document.createElement('small')
             let gameDate = new Date(game.id)
             small1.innerHTML = gameDate.toLocaleDateString('en-US')
@@ -554,7 +557,7 @@ export class Templates {
             savedGameCard.appendChild(savedGameCardHeader)
             const p = document.createElement('p')
             p.className = 'mb-1'
-            game.players.forEach(player=>{
+            game.players.forEach(player => {
                 p.innerHTML = p.innerHTML + `${player.name} `
             })
             const small2 = document.createElement('small')
@@ -566,6 +569,6 @@ export class Templates {
         appDiv.appendChild(savedGamesUl)
     }
     viewCard(appDiv) {
-        
+
     }
 }
