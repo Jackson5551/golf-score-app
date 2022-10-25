@@ -518,7 +518,7 @@ export class Templates {
                 selector.style.display = 'none'
                 label.style.display = 'none'
                 currentGame.tee = selector.value
-                currentGame.teeName = selector.children[currentGame.tee].textContent
+                currentGame.teeName = selector.children[parseInt(currentGame.tee) + 1].textContent
                 storageHandler.save(currentGame)
                 renderCards()
             })
