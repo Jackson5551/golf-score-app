@@ -315,12 +315,12 @@ export class Templates {
                 small.innerHTML = ''
                 const p = document.createElement('p')
                 p.classList.add('mb-1')
-                p.innerText = 'Address'
+                // p.innerText = 'Address'
 
                 a.appendChild(div)
                 div.appendChild(h5)
                 div.appendChild(small)
-                a.appendChild(p)
+                // a.appendChild(p)
 
                 container.appendChild(a)
 
@@ -529,8 +529,6 @@ export class Templates {
         } else {
             renderCards()
         }
-
-
     }
     viewScorecards(appDiv) {
         appDiv.innerHTML = ''
@@ -539,36 +537,76 @@ export class Templates {
         // this.backBtn.firstChild.classList.add('bi', 'bi-arrow-left')
         this.titleText.innerHTML = this.title
         const getSavedScorecards = storageHandler.fetchSavedScorecards()
-        const savedGamesUl = document.createElement('div')
-        savedGamesUl.className = 'list-group'
-        getSavedScorecards.games.forEach(game => {
-            const savedGameCard = document.createElement('a')
-            savedGameCard.className = 'list-group-item list-group-item-action'
-            const savedGameCardHeader = document.createElement('div')
-            savedGameCardHeader.className = 'd-flex justify-content-between'
+
+        getSavedScorecards.games.forEach(savedGame => {
+
+            const savedGameCard = document.createElement('div')
+            savedGameCard.className = 'card mb-2'
+            const savedGameCardBody = document.createElement('div')
+            savedGameCardBody.className = 'card-body'
             const savedGameCardTitle = document.createElement('h5')
-            savedGameCardTitle.className = 'mb-1'
-            savedGameCardTitle.innerHTML = game.course.name + ' - ' + game.teeName
-            const small1 = document.createElement('small')
-            let gameDate = new Date(game.id)
-            small1.innerHTML = gameDate.toLocaleDateString('en-US')
-            savedGameCardHeader.appendChild(savedGameCardTitle)
-            savedGameCardHeader.appendChild(small1)
-            savedGameCard.appendChild(savedGameCardHeader)
-            const p = document.createElement('p')
-            p.className = 'mb-1'
-            game.players.forEach(player => {
-                p.innerHTML = p.innerHTML + `${player.name} `
+            savedGameCardTitle.className = 'card-title'
+            savedGameCardTitle.innerHTML = savedGame.course.name + ` <small>(${savedGame.teeName})</small>`
+            const savedGameCardSubtitle = document.createElement('h6')
+            savedGameCardSubtitle.className = 'card-subtitle mb-2 text-muted'
+            let gameDate = new Date(savedGame.id)
+            savedGameCardSubtitle.innerHTML = gameDate.toLocaleDateString('en-US')
+            const savedGameCardPlayerList = document.createElement('ul')
+            savedGameCardPlayerList.className = 'list-group list-group-flush'
+            savedGame.players.forEach(player => {
+                const playerLi = document.createElement('li')
+                playerLi.className = 'list-group-item'
+                playerLi.innerHTML = player.name
+                savedGameCardPlayerList.appendChild(playerLi)
             })
-            const small2 = document.createElement('small')
-            savedGameCard.appendChild(p)
-            savedGameCard.appendChild(small2)
+            const savedGameCardFooter = document.createElement('div')
+            savedGameCardFooter.className = 'card-footer d-flex justify-content-center flex-column text-center'
+            const savedGameCardDeleteBtn = document.createElement('a')
+            savedGameCardDeleteBtn.className = 'btn btn-danger mt-2'
+            savedGameCardDeleteBtn.innerHTML = 'Delete Scorecard'
 
-            savedGamesUl.appendChild(savedGameCard)
+            savedGameCardDeleteBtn.addEventListener('click', () => {
+                const confirmationLabel = document.createElement('span')
+                confirmationLabel.className = 'text-danger text-muted'
+                confirmationLabel.innerHTML = 'Are you sure you want to delete this scorecard? <strong>This operation cannot be undone!</strong>'
+                const confirmationBtnGroup = document.createElement('div')
+                confirmationBtnGroup.className = 'btn-group mt-2'
+                const cancelBtn = document.createElement('button')
+                cancelBtn.className = 'btn btn-secondary'
+                cancelBtn.innerHTML = 'Cancel'
+                const deleteBtn = document.createElement('button')
+                deleteBtn.className = 'btn btn-danger'
+                deleteBtn.innerHTML = 'Delete'
+
+                savedGameCardDeleteBtn.style.display = 'none'
+
+                savedGameCardFooter.appendChild(confirmationLabel)
+                savedGameCardFooter.appendChild(confirmationBtnGroup)
+                confirmationBtnGroup.appendChild(cancelBtn)
+                confirmationBtnGroup.appendChild(deleteBtn)
+
+                cancelBtn.addEventListener('click', () => {
+                    savedGameCardFooter.removeChild(confirmationLabel)
+                    savedGameCardFooter.removeChild(confirmationBtnGroup)
+                    confirmationBtnGroup.removeChild(cancelBtn)
+                    confirmationBtnGroup.removeChild(deleteBtn)
+                    savedGameCardDeleteBtn.style.display = 'block'
+                })
+                deleteBtn.addEventListener('click', () => {
+                    storageHandler.removeSavedScorecard(savedGame)
+                    this.viewScorecards(appDiv)
+                })
+
+
+            })
+
+            savedGameCard.appendChild(savedGameCardBody)
+            savedGameCardBody.appendChild(savedGameCardTitle)
+            savedGameCardBody.appendChild(savedGameCardSubtitle)
+            savedGameCardBody.appendChild(savedGameCardPlayerList)
+            savedGameCard.appendChild(savedGameCardFooter)
+            savedGameCardFooter.appendChild(savedGameCardDeleteBtn)
+            appDiv.appendChild(savedGameCard)
         })
-        appDiv.appendChild(savedGamesUl)
-    }
-    viewCard(appDiv) {
-
     }
 }

@@ -51,6 +51,18 @@ export function setSavedScorecards(game){
     }
 }
 
+export function removeSavedScorecard(game){
+    let lsSavedGames = JSON.parse(localStorage.getItem(SAVED_SCORECARDS_KEY))
+    console.log(lsSavedGames)
+    lsSavedGames.games.forEach((savedGame, i) => {
+        if(savedGame.id === game.id){
+            lsSavedGames.games.splice(i,1)
+            localStorage.setItem(SAVED_SCORECARDS_KEY, JSON.stringify(lsSavedGames))
+        }
+        i++
+    })
+}
+
 export function fetchSavedScorecards(){
     console.log('Fetching...')
     return JSON.parse(localStorage.getItem(SAVED_SCORECARDS_KEY))

@@ -54,13 +54,6 @@ const allPages = [
         func: function(){
             new Templates('Saved Scorecards').viewScorecards(appDiv)
         }
-    },
-    {
-        title: 'View Card',
-        path: 'view-card',
-        func: function(){
-            new Templates('View Card').viewCard(appDiv)
-        }
     }
 
 ]
@@ -102,7 +95,6 @@ route('/edit-players', 'edit-players');
 route('/edit-course', 'edit-course');
 route('/game', 'game');
 route('/saved-scorecards', 'saved-scorecards');
-route('/view-card', 'view-card');
 
 let router = (evt) => {
     const url = window.location.hash.slice(1) || "/";
