@@ -584,7 +584,7 @@ export class Templates {
                 playerInSpan.innerHTML = `IN: ${playerIn}`
                 const playerTotalScoreSpan = document.createElement('span')
                 playerTotalScoreSpan.className = 'fw-bold'
-                playerTotalScoreSpan.innerHTML = `TOTAL:${sum}`
+                playerTotalScoreSpan.innerHTML = `TOTAL: ${sum}`
                 playerLi.appendChild(playerNameSpan)
                 playerScoreInfo.appendChild(playerOutSpan)
                 playerScoreInfo.appendChild(playerInSpan)
