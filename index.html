@@ -84,17 +84,17 @@
     <nav class="navbar navbar-primary text-light bg-primary">
         <div class="container-fluid">
             <div class="nav-item">
-                <a href="" id="backBtn" class="nav-link fs-1"><i></i></a>
+                <a href="" id="backBtn" class="nav-link fs-1 p-1"><i></i></a>
             </div>
             <div class="nav-item">
-                <a id="titleText" class="nav-link text-light fs-1"></a>
+                <a id="titleText" class="nav-link text-light fs-1 p-1"></a>
             </div>
         </div>
     </nav>
     <div class="container">
         <div id="warningArea" role="alert" class="mt-2"></div>
     </div>
-    <div id="app" class="container d-flex justify-content-around mt-5 flex-column"></div>
+    <div id="app" class="container d-flex justify-content-around mt-2 flex-column"></div>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./service-worker.js')

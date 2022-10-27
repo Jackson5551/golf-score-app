@@ -542,6 +542,8 @@ export class Templates {
 
             const savedGameCard = document.createElement('div')
             savedGameCard.className = 'card mb-2'
+            const savedGameCardHeader = document.createElement('div')
+            savedGameCardHeader.className = 'card-header'
             const savedGameCardBody = document.createElement('div')
             savedGameCardBody.className = 'card-body'
             const savedGameCardTitle = document.createElement('h5')
@@ -552,11 +554,42 @@ export class Templates {
             let gameDate = new Date(savedGame.id)
             savedGameCardSubtitle.innerHTML = gameDate.toLocaleDateString('en-US')
             const savedGameCardPlayerList = document.createElement('ul')
-            savedGameCardPlayerList.className = 'list-group list-group-flush'
+            savedGameCardPlayerList.className = 'list-group list-group-flush d-flex'
             savedGame.players.forEach(player => {
+                let allScores = []
+                
+                player.scores.forEach(score =>{
+                    allScores.push(score.score)
+                })
+                const sum = allScores.reduce((a, b) => a + b, 0)
+                let playerIn = allScores.splice(9, 18)
+                playerIn = playerIn.reduce((a, b) => a + b, 0)
                 const playerLi = document.createElement('li')
+                let playerOut = allScores.splice(0,9)
+                playerOut = playerOut.reduce((a,b) => a + b, 0)
+
+                // playerLi.className = 'list-group-item d-flex justify-content-between'
                 playerLi.className = 'list-group-item'
-                playerLi.innerHTML = player.name
+                // playerLi.innerHTML = player.name + ' ' + sum
+                const playerNameSpan = document.createElement('span')
+                playerNameSpan.className = 'fs-5'
+                playerNameSpan.innerHTML = player.name
+                const playerScoreInfo = document.createElement('div')
+                playerScoreInfo.className = 'd-flex justify-content-between'
+                const playerOutSpan = document.createElement('span')
+                playerOutSpan.className = 'fw-light'
+                playerOutSpan.innerHTML = `OUT: ${playerOut}`
+                const playerInSpan = document.createElement('span')
+                playerInSpan.className = 'fw-light'
+                playerInSpan.innerHTML = `IN: ${playerIn}`
+                const playerTotalScoreSpan = document.createElement('span')
+                playerTotalScoreSpan.className = 'fw-bold'
+                playerTotalScoreSpan.innerHTML = `TOTAL:${sum}`
+                playerLi.appendChild(playerNameSpan)
+                playerScoreInfo.appendChild(playerOutSpan)
+                playerScoreInfo.appendChild(playerInSpan)
+                playerScoreInfo.appendChild(playerTotalScoreSpan)
+                playerLi.appendChild(playerScoreInfo)
                 savedGameCardPlayerList.appendChild(playerLi)
             })
             const savedGameCardFooter = document.createElement('div')
@@ -597,12 +630,12 @@ export class Templates {
                     this.viewScorecards(appDiv)
                 })
 
-
             })
 
+            savedGameCard.appendChild(savedGameCardHeader)
             savedGameCard.appendChild(savedGameCardBody)
-            savedGameCardBody.appendChild(savedGameCardTitle)
-            savedGameCardBody.appendChild(savedGameCardSubtitle)
+            savedGameCardHeader.appendChild(savedGameCardTitle)
+            savedGameCardHeader.appendChild(savedGameCardSubtitle)
             savedGameCardBody.appendChild(savedGameCardPlayerList)
             savedGameCard.appendChild(savedGameCardFooter)
             savedGameCardFooter.appendChild(savedGameCardDeleteBtn)
