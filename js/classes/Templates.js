@@ -16,27 +16,6 @@ export class Templates {
         this.titleText = document.querySelector('#titleText')
         this.warningArea = document.querySelector('#warningArea')
     }
-    navBar(icon, link) {
-        const nav = document.createElement('nav')
-        nav.classList.add('navbar', 'bg-success', 'text-light')
-        const div = document.createElement('div')
-        div.classList.add('container-fluid', 'justify-content-between')
-        const backBtn = document.createElement('a')
-        backBtn.classList.add('btn', 'btn-primary')
-        backBtn.href = `#/${link}`
-        backBtn.classList.add('btn', 'btn-success')
-        const backBtnIcon = document.createElement('i')
-        backBtnIcon.classList.add('bi', icon)
-        backBtn.innerHTML = `<h1 class="bi ${icon.toString()}"></h1>`
-        const pageTitle = document.createElement('h1')
-        pageTitle.innerHTML = this.title
-
-        nav.appendChild(div)
-        div.appendChild(backBtn)
-        div.appendChild(pageTitle)
-
-        return nav
-    }
     home(appDiv) {
         appDiv.innerHTML = ''
         this.backBtn.href = '#/home'
@@ -223,6 +202,15 @@ export class Templates {
                 editBtn.innerHTML = '<i class="bi bi-pencil-fill"></i>'
                 player.setName(playerName.value)
             })
+            playerName.addEventListener('keypress', e => {
+                if(e.key === 'Enter'){
+                    playerName.disabled = true
+                    deleteBtn.disabled = false
+                    editBtn.className = 'btn btn-warning text-light'
+                    editBtn.innerHTML = '<i class="bi bi-pencil-fill"></i>'
+                    player.setName(playerName.value)
+                }
+            })
 
             editBtn.addEventListener('click', () => {
                 if (playerName.disabled === true) {
@@ -231,12 +219,6 @@ export class Templates {
                     deleteBtn.disabled = true
                     editBtn.className = 'btn btn-success text-light'
                     editBtn.innerHTML = '<i class="bi bi-save-fill"></i>'
-                } else {
-                    playerName.disabled = true
-                    deleteBtn.disabled = false
-                    editBtn.className = 'btn btn-warning text-light'
-                    editBtn.innerHTML = '<i class="bi bi-pencil-fill"></i>'
-                    player.setName(playerName.value)
                 }
             })
 
